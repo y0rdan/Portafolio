@@ -1,0 +1,259 @@
+# Enterprise Active Directory Infrastructure Lab
+
+## Overview
+
+This project demonstrates the design, deployment, administration, hardening, and troubleshooting of a Windows Server enterprise environment using Active Directory Domain Services (AD DS). The lab simulates a production-grade corporate infrastructure with redundant domain controllers, centralized identity management, DNS/DHCP services, Group Policy enforcement, and disaster recovery operations.
+
+The environment focuses on real-world enterprise administration and SOC-aligned operational skills, including identity management, detection engineering readiness, infrastructure resilience, and incident-level troubleshooting across Windows Server ecosystems.
+
+---
+
+## Objectives
+
+- Deploy a fully functional Active Directory enterprise domain
+- Configure multiple redundant domain controllers for high availability
+- Implement DNS and DHCP services in an enterprise network
+- Design and enforce Group Policy Objects (GPOs)
+- Validate Active Directory replication and SYSVOL synchronization
+- Simulate enterprise-level infrastructure failures and troubleshooting
+- Harden Windows Server environments using security best practices
+- Automate administrative tasks using PowerShell
+- Execute disaster recovery and rollback procedures
+- Develop SOC-relevant troubleshooting and investigation skills
+
+---
+
+## Technologies Used
+
+- Windows Server 2022 / Windows Server 2025
+- Active Directory Domain Services (AD DS)
+- DNS (Domain Name System)
+- DHCP (Dynamic Host Configuration Protocol)
+- DFS Replication (DFSR)
+- Group Policy Management Console (GPMC)
+- PowerShell 5.1 / PowerShell 7+
+- Hyper-V / VMware Workstation
+- Windows Admin Center
+- Microsoft Defender for Endpoint
+
+---
+
+## Lab Architecture
+
+### Infrastructure Layout
+
+| Server Name   | Role                        | IP Address     |
+|---------------|----------------------------|----------------|
+| DC01          | Primary Domain Controller  | 192.168.1.10   |
+| DC02          | Secondary Domain Controller| 192.168.1.11   |
+| WIN10-CLIENT  | Domain-Joined Workstation  | 192.168.1.100  |
+
+---
+
+## Network Configuration
+
+### DNS Configuration
+
+- Forward Lookup Zone configured for `company.local`
+- Reverse Lookup Zone implemented for internal resolution
+- Active Directory–integrated DNS replication enabled
+- Conditional forwarding configured for external name resolution
+- DNS health validation performed using diagnostic and resolution tests
+
+### DHCP Configuration
+
+- IPv4 scope configured for internal enterprise subnet
+- DHCP reservations configured for infrastructure systems
+- Lease duration optimized for lab environment simulation
+- Dynamic DNS registration enabled for client devices
+
+---
+
+## Active Directory Configuration
+
+### Organizational Unit Structure
+
+
+Company.local
+│
+├── Servers
+├── Workstations
+├── Users
+│ ├── IT
+│ ├── HR
+│ └── Finance
+├── Groups
+├── Service Accounts
+└── Admin Accounts
+
+
+---
+
+## User and Group Management
+
+Implemented enterprise identity and access control practices:
+
+- Role-Based Access Control (RBAC)
+- Security group segmentation following least privilege model
+- Administrative delegation using OU-based permissions
+- Standardized user provisioning process
+- Password complexity enforcement
+- Account lockout policy configuration
+
+---
+
+## Group Policy Implementation
+
+### Security Policies
+
+- Password complexity and length enforcement
+- Account lockout thresholds
+- Microsoft Defender configuration via GPO
+- Windows Firewall enforcement
+- USB storage device restrictions
+- Advanced audit logging configuration
+
+### Administrative Policies
+
+- Desktop restriction policies
+- Network drive mappings
+- Logon banner enforcement
+- PowerShell execution policy configuration
+- Security baseline alignment
+
+---
+
+## SYSVOL and DFS Replication
+
+### DFSR Configuration
+
+- SYSVOL replication configured across DC01 and DC02
+- Replication health monitoring enabled
+- DFSR event log analysis performed for validation
+- Replication backlog checks executed during testing
+- Synchronization consistency verified across domain controllers
+
+### Troubleshooting Scenarios
+
+Resolved simulated enterprise failures including:
+
+- SYSVOL replication breakdown between domain controllers
+- DFSR service state corruption and stalled replication
+- Group Policy propagation failures across domain
+- DNS replication inconsistencies affecting authentication
+- Domain controller communication and trust issues
+
+---
+
+## Disaster Recovery Testing
+
+### Recovery Scenarios Executed
+
+- Domain controller failure and recovery simulation
+- SYSVOL corruption and restoration
+- DFSR non-authoritative synchronization rebuild
+- Active Directory metadata cleanup procedures
+- DNS service restoration and validation
+
+### Validation Procedures
+
+- Authentication functionality confirmed across domain
+- Group Policy application verified on endpoints
+- SYSVOL availability tested on all controllers
+- Replication health validated using diagnostic tools
+
+---
+
+## PowerShell Automation
+
+### User Creation Script
+
+```powershell
+Import-Module ActiveDirectory
+
+New-ADUser `
+-Name "John Doe" `
+-GivenName "John" `
+-Surname "Doe" `
+-SamAccountName "jdoe" `
+-UserPrincipalName "jdoe@company.local" `
+-Path "OU=Users,DC=company,DC=local" `
+-Enabled $true `
+-AccountPassword (ConvertTo-SecureString "P@ssw0rd123!" -AsPlainText -Force)
+Replication & Health Validation
+Active Directory Replication Checks
+repadmin /replsummary
+dcdiag /v
+Get-ADReplicationFailure -Scope Site
+SYSVOL Validation
+net share
+dfsrmig /getmigrationstate
+Get-Service DFSR
+Security Hardening
+
+Implemented enterprise security controls:
+
+Microsoft Defender for Endpoint policies
+Attack Surface Reduction (ASR) rules
+SMB protocol hardening
+RDP access restrictions
+PowerShell logging and transcription enabled
+Credential protection (LSA / Credential Guard)
+Windows Firewall enforcement
+Advanced audit policy configuration
+Challenges Encountered
+DFSR SYSVOL Replication Failure
+
+A replication failure occurred due to DFSR state inconsistency and replication topology mismatch between domain controllers.
+
+Resolution Steps
+Verified Active Directory replication integrity first
+Analyzed DFSR event logs for root cause indicators
+Forced non-authoritative SYSVOL synchronization
+Rebuilt DFSR replication membership configuration
+Confirmed SYSVOL health across all domain controllers
+Lessons Learned
+DNS misconfiguration can silently break Active Directory environments
+DFSR is highly sensitive to state corruption and requires strict recovery procedures
+PowerShell automation reduces operational errors and improves efficiency
+Replication monitoring is critical in multi-domain-controller environments
+Disaster recovery must be validated through real failure simulation
+Skills Demonstrated
+Active Directory Domain Services Administration
+Windows Server Infrastructure Management
+DNS and DHCP Engineering
+DFS Replication Troubleshooting
+Group Policy Design and Enforcement
+PowerShell Automation
+Enterprise Infrastructure Hardening
+Disaster Recovery Execution
+SOC-style Incident Troubleshooting
+Identity and Access Management (IAM)
+Future Improvements
+Microsoft Entra ID hybrid integration
+Microsoft Sentinel SIEM integration
+Automated monitoring dashboards (Grafana / Sentinel Workbooks)
+Multi-site Active Directory replication design
+PKI / Certificate Services deployment
+Automated vulnerability scanning integration
+Centralized log collection and detection engineering
+Screenshots to Include
+Active Directory Users and Computers (ADUC)
+DNS Manager configuration
+DHCP scope configuration and leases
+Group Policy Management Console (GPMC)
+DFS Management console
+Event Viewer replication logs
+PowerShell execution outputs
+Replication health results (repadmin / dcdiag)
+Hyper-V or VMware topology view
+Repository Structure
+active-directory-lab/
+│
+├── README.md
+├── diagrams/
+├── screenshots/
+├── powershell/
+├── gpo-backups/
+├── recovery-procedures/
+└── documentation/
