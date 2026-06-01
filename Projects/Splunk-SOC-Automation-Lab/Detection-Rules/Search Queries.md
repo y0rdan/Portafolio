@@ -1,4 +1,4 @@
-````markdown
+
 # Splunk Detection Queries – SOC Project
 
 ## 1. AS-REP Roasting Detection
