@@ -105,7 +105,7 @@ Built a SOC monitoring and detection system using Splunk as the central SIEM:
 ## 📫 Connect With Me
 
 <p align="center">
-  <a href="https://www.linkedin.com/in/YordanBorges" target="_blank">
+  <a href="https://www.linkedin.com/in/yordan-borges-b86791172" target="_blank">
     <img src="https://img.shields.io/badge/LinkedIn-blue?style=for-the-badge&logo=linkedin" />
   </a>
   <a href="mailto:yordanb00@yahoo.com">
