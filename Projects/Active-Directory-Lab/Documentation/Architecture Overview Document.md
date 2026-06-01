@@ -8,9 +8,9 @@ This document describes the logical and physical architecture of the Enterprise 
 
 ## Domain Structure
 
-- Domain Name: company.local
-- Forest Functional Level: Windows Server 2022
-- Domain Functional Level: Windows Server 2022
+- Domain Name: homelab.local
+- Forest Functional Level: Windows Server 2019
+- Domain Functional Level: Windows Server 2019
 
 ---
 
