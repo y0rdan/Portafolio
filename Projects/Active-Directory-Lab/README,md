@@ -305,12 +305,4 @@ A replication failure was simulated due to DFSR state inconsistency and topology
 * Automated vulnerability scanning
 * Centralized log collection and detection engineering
 
-```
 
----
-
-If needed, this can be converted into:
-- :contentReference[oaicite:0]{index=0}
-- :contentReference[oaicite:1]{index=1}
-- or :contentReference[oaicite:2]{index=2}
-```
