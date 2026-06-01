@@ -1,4 +1,4 @@
-```markdown
+
 # Splunk SOC Environment with AI-Driven Incident Automation and Discord Alerting
 
 ## Overview
