@@ -3,43 +3,106 @@
 <h1 align="center">👋 Hi, I'm Yordan Borges</h1>
 
 <p align="center">
-  <b>Cybersecurity | Blue Team | Python Developer</b><br>
-  Building security automation tools & exploring digital defense.
+  <b>Microsoft SC-200 Certified | Cybersecurity | Blue Team | SOC Analyst | Python Developer</b><br>
+  Building security detection systems, SOC pipelines, and enterprise defense labs.
 </p>
 
 ---
 
-### 🧠 About Me
+## 🏆 Certifications
 
-- 💻 Currently focused on **blue team operations**, **network defense**, and **log analysis**
-- 🐍 Developing Python tools for **threat detection**, **incident response**, and **forensics**
-- 📊 Interested in **SIEM integration**, **SOC automation**, and **open-source intelligence**
-- ⚙️ Experimenting with **port scanners**, **log analyzers**, and **SQL-based encryption utilities**
-- 🎯 Goal: strengthen my defensive security skills and contribute to the cybersecurity community
+- 🎓 **Microsoft SC-200 (Security Operations Analyst)**  
+  Focus: Microsoft Defender, Microsoft Sentinel, threat detection, incident response, and SOC operations
 
 ---
 
-### 🧰 Tech Stack
+## 🧠 About Me
+
+- 💻 Focused on **SOC operations, Blue Team engineering, and detection engineering**
+- 🏢 Built an **enterprise Active Directory security lab simulating real-world corporate infrastructure**
+- 📊 Designed **Splunk SIEM detection rules for authentication attacks, lateral movement, and privilege escalation**
+- 🐍 Developing Python tools for **log analysis, threat detection, and incident response automation**
+- ⚙️ Working with **Windows Event Logs, Splunk SPL, and security telemetry pipelines**
+- 🎯 Goal: specialize in **SOC engineering, SIEM architecture, and threat detection automation**
+
+---
+
+## 🧰 Tech Stack
 
 | Category | Tools & Technologies |
 |-----------|----------------------|
 | 💻 Languages | Python, Bash, SQL |
-| 🧩 Security | Wireshark, Nmap, Splunk, ELK, MITRE ATT&CK |
-| ☁️ Platforms | Windows, Linux (Ubuntu/Kali), Azure |
+| 🧩 Security | Splunk, Wireshark, Nmap, ELK, MITRE ATT&CK |
+| 🏢 Enterprise | Active Directory, Group Policy, DNS, DHCP |
+| ☁️ Platforms | Windows Server, Linux (Ubuntu/Kali), Azure |
 | ⚙️ Dev Tools | Git, VS Code, SQLite |
 
 ---
 
-### 🧩 Featured Projects
+## 🛡️ Featured Cybersecurity Labs
 
-🔹 **[Port Scanner](#)** — Multithreaded TCP scanner with banner grabbing & CSV export  
-🔹 **[Log Analyzer](#)** — Detects brute-force attempts & root access in system logs  
-🔹 **[Encryption DB Tool](#)** — SQLite-based text encryption & offset tracking  
-🔹 *(More projects coming soon — stay tuned!)*
+### 🔷 Enterprise Active Directory Security Lab (Blue Team Infrastructure)
+
+Built a full enterprise identity environment simulating real corporate infrastructure:
+
+- Multi-domain controller setup (DC01 / DC02)
+- Active Directory Domain Services (AD DS)
+- DNS + DHCP enterprise configuration
+- Group Policy security hardening
+- Windows event auditing for security telemetry
+- Simulated authentication attacks and privilege escalation scenarios
+
+**Security focus:**
+- Kerberos attacks (AS-REP Roasting, Kerberoasting)
+- Brute force detection (Event ID 4625)
+- Privilege escalation monitoring (4720, 4672)
+- Lateral movement tracking (5140 SMB access)
 
 ---
 
-### 📫 Connect With Me
+### 🔶 Splunk SOC Detection Engineering Lab (SIEM Layer)
+
+Built a SOC monitoring and detection system using Splunk as the central SIEM:
+
+- Windows Event Log ingestion from domain controllers
+- Detection engineering using SPL queries
+- Behavioral threshold-based alerting
+- Attack correlation across multiple event types
+- Incident-ready detection rules
+
+**Detections implemented:**
+- Brute force attacks (4625)
+- Password spray detection
+- Kerberoasting (4769)
+- AS-REP Roasting (4768)
+- PowerShell abuse (4104)
+- Mimikatz / credential dumping indicators (4688)
+- Lateral movement via SMB enumeration (5140)
+
+---
+
+## 🔍 SOC Detection Engineering Focus
+
+- Authentication anomaly detection
+- Identity-based attack detection (Kerberos abuse)
+- Endpoint execution monitoring (PowerShell, cmd, rundll32)
+- Lateral movement detection across hosts
+- Correlation of multi-stage attack chains
+- SIEM rule development using SPL
+
+---
+
+## 🧩 Featured Projects
+
+🔹 **Enterprise Active Directory Security Lab** — Full domain infrastructure with security hardening & attack simulation  
+🔹 **Splunk SOC Detection Lab** — SIEM-based detection engineering using Windows Event Logs  
+🔹 **Port Scanner (Python)** — Multithreaded TCP scanner with banner grabbing & CSV export  
+🔹 **Log Analyzer (Python)** — Detects brute force and privilege escalation patterns in logs  
+🔹 **Encryption DB Tool** — SQLite-based encryption utility with offset tracking  
+
+---
+
+## 📫 Connect With Me
 
 <p align="center">
   <a href="https://www.linkedin.com/in/YordanBorges" target="_blank">
@@ -55,8 +118,6 @@
 
 ---
 
-### ⚡ Fun Fact
-> “Amateurs hack systems. Professionals hack time.” ⏱️  
+## ⚡ Fun Fact
 
----
->
+> “Security is not about tools. It’s about visibility, correlation, and response.”
