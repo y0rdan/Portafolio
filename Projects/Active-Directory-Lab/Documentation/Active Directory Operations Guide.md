@@ -14,7 +14,7 @@ Users are created using PowerShell or Active Directory Users and Computers (ADUC
 
 Key fields:
 - Username (sAMAccountName)
-- UPN (user@company.local)
+- UPN (user@homelab.local)
 - OU placement
 - Group membership
 
