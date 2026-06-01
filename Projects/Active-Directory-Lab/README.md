@@ -1,6 +1,3 @@
-Cleaned and fully GitHub-safe version (fixed broken code fence + removed all invalid trailing artifacts + normalized markdown structure):
-
-````markdown
 # Enterprise Active Directory Infrastructure Lab
 
 ## Overview
