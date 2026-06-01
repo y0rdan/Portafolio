@@ -111,7 +111,7 @@ Built a SOC monitoring and detection system using Splunk as the central SIEM:
   <a href="mailto:yordanb00@yahoo.com">
     <img src="https://img.shields.io/badge/Email-grey?style=for-the-badge&logo=gmail" />
   </a>
-  <a href="https://github.com/yordanb00">
+  <a href="https://github.com/y0rdan">
     <img src="https://img.shields.io/badge/GitHub-black?style=for-the-badge&logo=github" />
   </a>
 </p>
