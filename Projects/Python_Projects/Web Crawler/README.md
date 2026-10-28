@@ -21,13 +21,14 @@ It’s designed for educational or internal use, ideal for learning about **web 
 
 ---
 
-## 🧰 `Requirements`
+## Requirements
 
-Create a `requirements.txt` file with these dependencies:
+`requirements.txt` lists the third-party packages:
 
-
+```text
 requests>=2.31.0
 beautifulsoup4>=4.12.3
+```
 
 ## 🧰 Install Requirements
 
@@ -41,8 +42,8 @@ project/
 │   └── pages.db          # SQLite database (auto-created)
 │
 ├── urls.txt              # Input file containing URLs to crawl
-├── crawled.txt           # Output file with all crawled URLs
-├── crawler.py            # Main script (this file)
+├── crawled.txt           # Output file with crawled URLs (gitignored, created on a run)
+├── Web_crawler.py        # Main script
 └── requirements.txt
 
 
@@ -57,8 +58,7 @@ https://another-site.com
 
 **Run the crawler**
 
-chmod +x crawler.py
-./crawler.py or: python3 crawler.py
+python3 Web_crawler.py
 
 
 View results
@@ -86,7 +86,7 @@ print_db()	Prints the contents of the database table.
     The crawler currently limits itself to 10 pages per seed URL (max_pages parameter).
     It only follows internal links (same domain as the start URL).
     It doesn’t obey robots.txt — for ethical and legal use, consider adding compliance if you plan to crawl live sites.
-    You must manually ensure the db/ directory exists (or the script will fail to write the database file).
+    The script creates the `db/` directory if it is missing. `pages.db` and `crawled.txt` are generated output and are gitignored.
 
 
 👤 Author

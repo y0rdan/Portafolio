@@ -167,7 +167,7 @@ Execution on a Domain Controller significantly increases blast radius risk.
 
 ## MITRE ATT&CK Mapping
 
-* Technique: T1003.005 – OS Credential Dumping: LSASS Memory
+* Technique: T1003.001 – OS Credential Dumping: LSASS Memory
 
 ## Recommended Actions
 

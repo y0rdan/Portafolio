@@ -30,22 +30,11 @@ DeviceFileEvents
 
 ---
 
-## Tuning Log
+## Tuning Notes
 
-| Field | Detail |
-|-------|--------|
-| Baseline Noise | ~5 alerts/day |
-| Tuning Period | 7 business days |
-| Final FP Rate | ~0–1 alerts/week |
+Illustrative lab guidance only. This is not a measured production baseline, and it does not list exclusions from a real environment. See the [example tuning log](../tuning-log/tuning-log.md).
 
-**Exclusions Applied:**
-- Excluded Veeam Backup & Replication agent process tree
-- Excluded file server migration service account during active migration projects
-- Raised file rename threshold from 100 to 200 files per 5-minute window
-
-**Analyst Notes:** Known ransomware extensions (`.locked`, `.encrypted`, `.enc`, `.crypted`) = isolate immediately. Do not wait for analyst confirmation. Automated playbook recommended for this rule.
-
----
+When you adapt this query, baseline it on your own telemetry. Expect noise from ordinary administration (installers, backup and inventory jobs, approved remote access). If you add an exclusion, keep it as narrow as the benign case. Do not publish a live network's process name, account pattern, or host prefix.
 
 ## Response Actions
 

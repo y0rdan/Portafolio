@@ -27,22 +27,11 @@ SigninLogs
 
 ---
 
-## Tuning Log
+## Tuning Notes
 
-| Field | Detail |
-|-------|--------|
-| Baseline Noise | ~15 alerts/day |
-| Tuning Period | 5 business days |
-| Final FP Rate | ~1–2 alerts/day |
+Illustrative lab guidance only. This is not a measured production baseline, and it does not list exclusions from a real environment. See the [example tuning log](../tuning-log/tuning-log.md).
 
-**Exclusions Applied:**
-- Excluded internal vulnerability scanner IPs (Tenable/Nessus)
-- Excluded legacy application service accounts using NTLM
-- Raised unique account threshold from 5 to 10
-
-**Analyst Notes:** Enrich with IP reputation. External IPs = high priority. Block at firewall if confirmed malicious.
-
----
+When you adapt this query, baseline it on your own telemetry. Expect noise from ordinary administration (installers, backup and inventory jobs, approved remote access). If you add an exclusion, keep it as narrow as the benign case. Do not publish a live network's process name, account pattern, or host prefix.
 
 ## Response Actions
 

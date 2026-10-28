@@ -5,9 +5,6 @@ from colorama import Fore, Style
 from pwn import log
 import os
 
-import sys
-from numpy.ma.testutils import fail_if_equal
-
 #  === CONFIGURATION ===
 LOG_FILE = "logs/sample_auth.log"
 REPORT_FILE = "reports/report.csv"

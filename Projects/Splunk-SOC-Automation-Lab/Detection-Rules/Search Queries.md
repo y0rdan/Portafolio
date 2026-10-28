@@ -6,7 +6,7 @@
 index=wineventlog EventCode=4768 Pre_Authentication_Type=0
 | stats count by Account_Name, Client_Address
 | where count > 1
-````
+```
 
 ## 2. Account Lockout Detection
 
@@ -91,7 +91,4 @@ index=wineventlog EventCode=4104
 index=wineventlog EventCode=4688
 (CommandLine="*powershell*" OR CommandLine="*cmd.exe*" OR CommandLine="*rundll32*" OR CommandLine="*regsvr32*")
 | stats count by ParentProcessName, New_Process_Name, Account_Name
-```
-
-```
 ```

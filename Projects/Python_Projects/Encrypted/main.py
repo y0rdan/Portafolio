@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
-import random
+"""Caesar-cipher learning exercise.
+
+Shifts each character by an integer offset and stores the shifted text and
+the offset in the same SQLite row. This is not encryption. Anyone who can
+read the database can reverse every value. Do not store real secrets here.
+"""
 import sqlite3
-from pathlib import *
+from pathlib import Path
 import argparse
 
 # VARIABLES
 
 db_path = Path("db/encrypted.db")
+db_path.parent.mkdir(parents=True, exist_ok=True)
 
 # Create DB if not exist
 
@@ -74,7 +80,9 @@ def write_to_file(encrypted, filename):
 
 # Define Parser
 
-parser = argparse.ArgumentParser(description="Encrypt text using sqlite database")
+parser = argparse.ArgumentParser(
+    description="Caesar-cipher exercise. Stores the shift next to the text in SQLite. Not encryption."
+)
 
 parser.add_argument("-e", nargs = 2, help="encrypt text (use: -e <text> <offset>)")
 parser.add_argument("-d", nargs = 1, help="decrypt text (use: -d <encrypted text>)")
@@ -93,19 +101,12 @@ if args.e:
     encrypted = encrypt(text, offset)
     add(encrypted, offset)
 
-    print(f"Encrypted Output: {encrypted} \n" )
+    print(f"Shifted text: {encrypted} \n" )
 
-    if args.o and args.e:
+    if args.o:
         output_file = "encrypted.txt"
-
         write_to_file(encrypted, output_file)
-        print(f"Encrypted text '{encrypted}' written to '{output_file}'")
-
-    if args.o and args.d:
-        output_file = "encrypted.txt"
-
-        write_to_file(decrypted, output_file)
-        print("[+] Output file created")
+        print(f"Shifted text '{encrypted}' written to '{output_file}'")
 
 elif args.d:
     text = args.d[0]
@@ -113,19 +114,15 @@ elif args.d:
     c.execute("SELECT offset FROM encrypted WHERE encrypted = ?", (text,))
     row = c.fetchone()
 
+    decrypted = None
     if row:  # Found a matching row
         offset = row[0]
         decrypted = decrypt(text, offset)
-        print(f"Decrypted text: {decrypted} \n")
+        print(f"Restored text: {decrypted} \n")
     else:
-        print(f"Encrypted text '{text}' not found in database \n")
+        print(f"Shifted text '{text}' not found in database \n")
 
-    if args.o and args.e:
-        output_file = "encrypted.txt"
-        write_to_file(encrypted, output_file)
-        print(f"Encrypted text '{encrypted}' written to '{output_file}'")
-
-    if args.o and args.d:
+    if args.o and decrypted is not None:
         output_file = "encrypted.txt"
         write_to_file(decrypted, output_file)
         print("[+] Output file created")

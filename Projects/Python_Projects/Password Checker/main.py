@@ -23,8 +23,6 @@ def load_file(filename):
                     else:
                         weak_pass.add(line)
 
-
-        print(weak_pass)
         return weak_pass
 
     except FileNotFoundError as e:
@@ -59,7 +57,7 @@ def check_score(pwd, pass_score = 0):
         pass_score += 1
         symbol = True
 
-    if len(pwd) > 8:
+    if len(pwd) >= 8:
         pass_score += 1
         length = True
 
@@ -97,7 +95,7 @@ def main():
 
     pwd = input(Fore.GREEN + "Please enter your password:\n>>> "  + Style.RESET_ALL)
 
-    pass_score,letter,caps,number,symbol,lenght = check_score(pwd)
+    pass_score,letter,caps,number,symbol,length = check_score(pwd)
 
 
     print(Fore.GREEN + f"[!] Checking Password Complexity and Length..."  + Style.RESET_ALL)
@@ -138,7 +136,7 @@ def main():
 
     time.sleep(2)
 
-    recommendation(letter, caps, number, symbol, lenght)
+    recommendation(letter, caps, number, symbol, length)
 
 
 # RUN APP

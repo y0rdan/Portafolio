@@ -1,181 +1,34 @@
----
+# Caesar Cipher Exercise (SQLite)
 
-# 🔐 SQLite Text Encryption Tool
+Author: Yordan Borges
 
-This is a simple **command-line Python tool** for encrypting and decrypting text strings using a **custom ASCII offset algorithm**.
-All encrypted values (and their offsets) are stored in a local **SQLite database** for later retrieval and decryption.
+This is a learning exercise. It is **not encryption**.
 
----
+`main.py` shifts each character by an integer offset (a Caesar cipher) and stores the shifted text **and the offset** in the same SQLite row. Anyone who can read `db/encrypted.db` can reverse every value. Do not put real secrets in it.
 
-## 🚀 Features
+There are no third-party dependencies. Python 3.8+ is enough.
 
-✅ Encrypt any text using a numeric offset
-✅ Decrypt text stored in the database
-✅ Automatically creates and manages a local SQLite database
-✅ List and clear all entries in the database
-✅ Optionally write encrypted/decrypted output to a text file
+## Usage
 
----
-
-## 🧩 Requirements
-
-* Python **3.8+**
-* No external dependencies (uses only Python’s standard library)
-
----
-
-## 📁 Database Structure
-
-The script automatically creates a database at:
-
-```
-db/encrypted.db
-```
-
-Table: **`encrypted`**
-
-| Column    | Type    | Description                  |
-| --------- | ------- | ---------------------------- |
-| id        | INTEGER | Primary key (auto increment) |
-| encrypted | TEXT    | Encrypted text value         |
-| offset    | NUMBER  | Offset used for encryption   |
-
----
-
-## ⚙️ Usage
-
-### Run with:
-
-```bash
-python3 main.py [options]
-```
-
----
-
-### 🔸 Encrypt Text
+Run from this folder. The script creates `db/` if it is missing.
 
 ```bash
 python3 main.py -e "HelloWorld" 5
-```
-
-**Example Output:**
-
-```
-Encrypted Output: Mjqqt\|twqi
-```
-
-Also stores the encrypted string and offset in the database.
-
-#### Save output to file:
-
-```bash
-python3 main.py -e "HelloWorld" 5 -o
-```
-
-→ Writes the result to `encrypted.txt`
-
----
-
-### 🔸 Decrypt Text
-
-```bash
-python3 main.py -d "Mjqqt\|twqi"
-```
-
-**Example Output:**
-
-```
-Decrypted text: HelloWorld
-```
-
-#### Save decrypted text to file:
-
-```bash
-python3 main.py -d "Mjqqt\|twqi" -o
-```
-
----
-
-### 🔸 List Database Contents
-
-```bash
 python3 main.py -l
-```
-
-**Example Output:**
-
-```
-[+] Printing Database
-
-(1, 'Mjqqt\|twqi', 5)
-```
-
----
-
-### 🔸 Clear the Database
-
-```bash
+python3 main.py -d "Mjqqt\twqi"
 python3 main.py -c
 ```
 
-Deletes all entries from the database.
+`-e` takes the text and the offset. `-d` looks that text up in the database and shifts it back by the stored offset. `-l` lists rows. `-c` deletes rows. `-o` appends the result to `encrypted.txt` (gitignored).
 
----
+## What is stored
 
-## 🧠 How It Works
+| Column | Meaning |
+| --- | --- |
+| id | Row id |
+| encrypted | Shifted text. The column name is historical. The value is not encrypted. |
+| offset | The shift, stored in plaintext next to the text |
 
-The encryption method is a **basic ASCII offset cipher**:
+## Why this is not encryption
 
-* Each character’s ASCII code is increased by the chosen offset when encrypting.
-* During decryption, the same offset is subtracted.
-
-Example:
-
-| Character | ASCII | Offset | Encrypted ASCII | Encrypted Char |
-| --------- | ----- | ------ | --------------- | -------------- |
-| H         | 72    | +5     | 77              | M              |
-
----
-
-## 📄 File Output
-
-If the `-o` flag is used, the script will write the encrypted or decrypted output to:
-
-```
-encrypted.txt
-```
-
-Each result is appended on a new line.
-
----
-
-## 🧰 Example Workflow
-
-```bash
-# Encrypt and store
-python3 main.py -e "Secret123" 3
-
-# Decrypt from DB
-python3 main.py -d "Vhfuhw456"
-
-# List database
-python3 main.py -l
-
-# Clear database
-python3 main.py -c
-```
-
----
-
-## ⚠️ Notes
-
-* Offsets must be **integer values**.
-* The script will **create the `db/` directory** and database automatically if they don’t exist.
-* It’s a **learning/demo encryption** — not secure for real sensitive data.
-
----
-## 🧑‍💻 Author
-
-**Yordan Borges**
-Coding Portfolio Project
----
+A Caesar cipher is reversible by trying a small set of shifts. This script also saves the shift it used. The database file is a normal SQLite file with no key. The point of the exercise is the CLI, `sqlite3`, and file output, not confidentiality.
