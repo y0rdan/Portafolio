@@ -1,141 +1,47 @@
-# 🛡️ File Integrity Monitoring (FIM) Tool
+# File Integrity Monitoring (FIM) Tool
 
-A lightweight Python-based **File Integrity Monitoring (FIM)** utility designed to detect unauthorized file modifications, additions, and deletions on monitored directories.  
+Author: Yordan Borges
 
-This tool helps system administrators and cybersecurity analysts ensure **data integrity** and **early threat detection** across critical systems.
+A small Python tool that hashes a directory with SHA-256, saves that baseline, and reports files that were added, modified, or deleted later. It is aimed at system administrators who want a simple integrity check on config or content directories.
 
----
+## Requirements
 
-## 🚀 Features
-
-- 🧮 **Baseline Creation:** Generates cryptographic SHA256 hashes of all files in a directory  
-- 🔍 **Integrity Verification:** Compares current state to baseline and reports changes  
-- 🧾 **Logging:** Logs all events (modifications, additions, deletions)  
-- 🕒 **Automatic Scanning:** Supports scheduled scans at user-defined intervals  
-- 💾 **Baseline Storage:** Uses JSON (simple and human-readable)  
-- 🧰 **Command-Line Interface:** Simple, scriptable CLI for automation  
-
----
-
-## 🧠 Use Cases
-
-- Detect unauthorized changes to configuration or system files  
-- Monitor web directories for injected scripts or malware  
-- Track file tampering for compliance (PCI-DSS, HIPAA, etc.)  
-- Integrate into Blue Team labs or SIEM workflows  
-
----
-
-## ⚙️ Installation
+- Python 3.8+
+- `schedule` is required only for `--auto`. `--init` and `--scan` use the standard library.
 
 ```bash
-git clone https://github.com/yordanb00/fim-tool.git
-cd fim-tool
 pip install -r requirements.txt
-````
+```
 
-> Optional dependency:
-> `schedule` — for automatic periodic scans
->
-> Install manually:
->
-> ```bash
-> pip install schedule
-> ```
+## Usage
 
----
-
-## 🧩 Usage
-
-### 1️⃣ Create a baseline
-
-Generate initial file hashes for a directory you want to monitor:
+Run these commands from this folder. The baseline is written to `baseline.json` in the current directory, and events are appended to `logs/fim.log`. Both paths are gitignored.
 
 ```bash
-python fim.py -d /path/to/watch --init
+python3 FIM.py -d /path/to/watch --init
+python3 FIM.py -d /path/to/watch --scan
+python3 FIM.py -d /path/to/watch --auto 10
 ```
 
-### 2️⃣ Perform a one-time scan
+`--auto` repeats the scan every 10 minutes in that last example.
 
-Compare current hashes against the saved baseline:
+## What the scan reports
 
-```bash
-python fim.py -d /path/to/watch --scan
-```
+| Result | Meaning |
+| --- | --- |
+| Modified | Path is in the baseline and the SHA-256 hash changed |
+| Added | Path is on disk and was not in the baseline |
+| Deleted | Path was in the baseline and is no longer on disk |
 
-### 3️⃣ Enable auto-monitoring
+The tool skips its own `baseline.json` and `logs/fim.log` so those files are not reported as changes.
 
-Continuously check integrity every 10 minutes:
+## Files in this folder
 
-```bash
-python fim.py -d /path/to/watch --auto 10
-```
-
----
-
-## 📁 Project Structure
-
-```
-fim-tool/
-│
-├── fim.py                # Main FIM script
-├── baseline.json         # Baseline hash database
-├── logs/
-│   └── fim.log           # Log file with alerts and changes
+```text
+File_integrity_Monitoring_Tool/
+├── FIM.py
+├── requirements.txt
 └── README.md
 ```
 
----
-
-## 🧰 Example Output
-
-```bash
-[*] Integrity Issues Detected:
-  ⚠️ Modified: 2 files
-  ➕ Added: 1 file
-  ❌ Deleted: 1 file
-```
-
-Or clean state:
-
-```bash
-[+] No integrity issues detected.
-```
-
----
-
-## 🧮 How It Works
-
-| Step | Description                                                    |
-| ---- | -------------------------------------------------------------- |
-| 1️⃣  | Calculates SHA256 hash of each file                            |
-| 2️⃣  | Saves baseline of all files in `baseline.json`                 |
-| 3️⃣  | During scan, rehashes current files and compares with baseline |
-| 4️⃣  | Logs and displays any modifications, additions, or deletions   |
-
----
-
-## 🧠 Future Enhancements
-
-* 🧾 SQLite database backend
-* 📧 Email / Discord alert integration
-* 📊 HTML/PDF reporting
-* ⚙️ File whitelist / exclusion filters
-* 🔒 Real-time monitoring via watchdog module
-
----
-
-## 🧑‍💻 Author
-
-**Yordan Borges**
-💻 Cybersecurity & Python Developer
-🔗 [LinkedIn](https://www.linkedin.com/) | [GitHub](https://github.com/<yourusername>)
-
----
-
-## ⚠️ Disclaimer
-
-This tool is designed for **educational and defensive purposes** only.
-Do **not** use it to monitor or modify systems without explicit authorization.
-
-
+`baseline.json` and `logs/` are created when you run the tool. They are not part of the repo.

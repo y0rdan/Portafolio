@@ -7,7 +7,9 @@ This project implements a fully functional Security Operations Center (SOC) lab 
 
 The environment simulates real-world SOC operations including log ingestion, threat detection, correlation rules, automated response workflows, and analyst-friendly incident summarization powered by AI.
 
-The goal is to demonstrate practical skills in SIEM engineering, detection engineering, SOC operations, automation, and security incident response.
+The goal is visibility for a Windows and Active Directory lab: get the logs in, write a few detections, and route the alert with n8n instead of watching the console.
+
+**What is in this folder:** this README, `Detection-Rules/Search Queries.md`, `Documentation/`, `Diagrams/`, `Discord Alerts Examples/` (alert text), `n8n-Workflows/Workflow Map.png`, and `Screenshots/`. There is no `powershell/`, `sysmon-config/`, or `splunk-searches/` directory. Those names are a roadmap. Sysmon deployment is described below. A Sysmon configuration file is not included.
 
 ---
 
@@ -35,8 +37,7 @@ n8n Workflow Automation
 ┌──────┴────────┐
 ▼               ▼
 AI Incident Summary   Discord Alerts
-
-````
+```
 
 ---
 
@@ -113,7 +114,7 @@ Custom Splunk queries were created to detect:
 index=wineventlog EventCode=4625
 | stats count by Account_Name, Source_Network_Address
 | sort -count
-````
+```
 
 ---
 
@@ -300,27 +301,23 @@ Created Splunk dashboards for:
 
 ## Repository Structure
 
-```
-splunk-soc-lab/
-│
+```text
+Splunk-SOC-Automation-Lab/
 ├── README.md
-├── diagrams/
-├── screenshots/
-├── splunk-searches/
-├── n8n-workflows/
-├── powershell/
-├── sysmon-config/
-├── detection-rules/
-└── documentation/
+├── Detection-Rules/
+│   └── Search Queries.md
+├── Diagrams/
+├── Discord Alerts Examples/
+├── Documentation/
+├── n8n-Workflows/
+│   └── Workflow Map.png
+└── Screenshots/
 ```
+
+Not in the repo: `powershell/`, `sysmon-config/`, `splunk-searches/`. Searches that exist are in this README and in `Detection-Rules/Search Queries.md`.
 
 
 
 ## Summary
 
-This project demonstrates an end-to-end SOC pipeline integrating SIEM engineering, detection rules, automation workflows, and AI-assisted incident response.
-
-It reflects real-world SOC operations including threat detection, log analysis, alert triage, and automated incident workflows used in modern enterprise security environments.
-
-```
-```
+This lab collects Windows and endpoint logs in Splunk, alerts on a few patterns, and routes the result through n8n. It is the visibility and automation side of the Active Directory lab: see what the servers are doing, and get the alert out of the console.

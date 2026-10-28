@@ -1,20 +1,20 @@
 # KQL Detection Rule Library — Microsoft Sentinel
-> **Author:** Yordan Borges | SC-200 Certified | Security Operations Analyst  
+> **Author:** Yordan Borges | Systems Engineer | SC-200  
 > **Platform:** Microsoft Sentinel (Log Analytics / Defender XDR)  
 > **Framework:** MITRE ATT&CK v14  
-> **Rules:** 12 production-ready detections with false positive tuning logs
+> **Rules:** 12 lab detections, plus an example tuning log
 
 ---
 
 ## Overview
 
-This repository contains a structured library of KQL detection rules written for Microsoft Sentinel, mapped to MITRE ATT&CK techniques. Each rule was developed from real-world security operations experience, baselined against live telemetry, and iteratively tuned to reduce false positive noise while maintaining high-fidelity detection coverage.
+Lab detections for Microsoft Sentinel, mapped to MITRE ATT&CK. They are here to show how systems work turns into visibility: sign-ins, Windows security events, endpoint process and file events.
 
 Every rule includes:
-- **Detection rationale** — why this technique matters and what the rule targets
-- **Production-ready KQL** — tested against Sentinel Log Analytics tables
-- **Tuning log** — baseline noise volume, exclusions applied, and final FP rate
-- **Analyst notes** — operational context and escalation guidance
+- **Detection rationale** — why this technique matters and what the query looks for
+- **KQL** — written for the Sentinel tables named in the rule
+- **Tuning note** — a pointer to the example tuning log, not a measured production baseline
+- **Response actions** — what to check next on the host or the account
 
 ---
 
@@ -64,16 +64,14 @@ kql-detection-library/
 
 ## Tuning Methodology
 
-All rules follow a structured tuning lifecycle:
+The example tuning log walks through a lifecycle you would use in a lab. It is not a record of exclusions applied to a live tenant.
 
-1. **Deploy in alert-only mode** — no automated response, observe volume for 5–10 business days
-2. **Baseline noise** — document alert volume and identify recurring false positive sources
-3. **Root cause each FP** — categorize by: legitimate tool, approved process, misconfiguration, or data quality issue
-4. **Apply targeted exclusions** — allowlist by process name, parent process, IP range, account prefix, or time window
-5. **Re-baseline** — run for another 5 days and measure FP rate reduction
-6. **Document and lock** — record all exclusions in the tuning log before enabling automated response
+1. **Deploy in alert-only mode** and watch the volume
+2. **Baseline noise** and name the benign cause (installer, backup job, inventory scan, approved remote access)
+3. **Narrow any exclusion** to that cause. Do not publish a real account prefix, product name, or hostname pattern
+4. **Re-baseline** and only then consider an automated response
 
-> Target FP rate: **< 5 alerts/day** for high-volume rules, **< 1 alert/week** for critical severity rules.
+> The example log uses illustrative volume targets. Measure your own workspace before you treat a number as real.
 
 ---
 
@@ -99,21 +97,20 @@ Requires **Microsoft Defender for Endpoint** connector and **Microsoft Entra ID*
 2. Paste the KQL from the relevant rule file
 3. Set query frequency and lookback window per the rule's recommendation
 4. Deploy in **alert-only** mode (no automated playbook) for initial baselining
-5. Apply exclusions from the tuning log after baseline period
-6. Enable automated response only after FP rate is within acceptable threshold
+5. Baseline on your own telemetry before adding any exclusion
+6. Turn on automated response only after you have measured the noise yourself. Do not copy exclusions from the example tuning log into a live workspace.
 
 ---
 
 ## Certifications & Background
 
 - **Microsoft Certified: Security Operations Analyst Associate (SC-200)**
-- 4+ years hands-on experience in hybrid Microsoft environments
-- Production experience with Microsoft Sentinel, Defender XDR, Entra ID, Azure Arc
-- Active Directory, Windows Server, and endpoint security administration
+- Hands-on work in hybrid Microsoft environments (Active Directory, Windows Server, endpoint administration)
+- Lab detections written for Microsoft Sentinel and Defender XDR tables
 
 ---
 
 ## Contact
 
 **Yordan Borges**  
-[LinkedIn](#) | [GitHub](#) | yordanb00@yahoo.com
+[LinkedIn](https://www.linkedin.com/in/yordan-borges-b86791172) | [GitHub](https://github.com/y0rdan) | yordanb00@yahoo.com

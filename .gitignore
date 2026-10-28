@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Generated databases and tool output
+*.db
+*.sqlite
+*.sqlite3
+encrypted.txt
+crawled.txt
+baseline.json
+
+# Local logs created by the file-integrity tool
+logs/
+
+# OS and editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

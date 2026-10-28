@@ -7,7 +7,9 @@ This project simulates a controlled offensive security environment using Kali Li
 
 The purpose is to demonstrate practical red team skills including reconnaissance, vulnerability assessment, exploitation, privilege escalation, and post-exploitation analysis within a legal lab environment.
 
-All activities are performed in an isolated virtual network for educational and professional cybersecurity development.
+All activities described here are for an isolated lab network.
+
+**What is in this folder:** this README only. Earlier outlines listed `scans/`, `exploits/`, `payloads/`, `screenshots/`, `wordlists/`, `reports/`, and `notes/`. Those directories are not in the repo. Treat them as a roadmap. The commands below are lab notes (common Metasploitable-style addresses). They are not captured output from a finished engagement.
 
 ---
 
@@ -53,8 +55,7 @@ Isolated Virtual Network (Host-only / NAT Network)
 ▼               ▼
 Metasploitable2   Windows Vulnerable VM
 (DVWA / Linux)    (Misconfigured Services)
-
-````id="arch1"
+```
 
 ---
 
@@ -100,7 +101,7 @@ The lab follows a structured penetration testing workflow:
 
 ```bash
 nmap -sS -sV -A 192.168.56.0/24
-````
+```
 
 ---
 
@@ -255,21 +256,13 @@ No real-world systems, networks, or unauthorized targets are involved.
 
 ## Repository Structure
 
+```text
+Kali Linux Attack Simulator/
+└── README.md
 ```
-kali-attack-lab/
-│
-├── README.md
-├── scans/
-├── exploits/
-├── payloads/
-├── screenshots/
-├── wordlists/
-├── reports/
-└── notes/
-```
+
+`scans/`, `exploits/`, `payloads/`, `screenshots/`, `wordlists/`, `reports/`, and `notes/` are not in the repo.
+
 ## Summary
 
-This project demonstrates structured offensive security operations using Kali Linux, focusing on reconnaissance, exploitation, privilege escalation, and attack path documentation in a controlled environment.
-
-```
-```
+This folder is a write-up of a lab attack path: reconnaissance, exploitation, privilege escalation, and what those steps look like in logs. The commands are notes. Captured scans, exploits, and reports are not stored here.

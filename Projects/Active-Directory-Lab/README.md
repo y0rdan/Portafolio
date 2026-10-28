@@ -4,7 +4,9 @@
 
 This project demonstrates the design, deployment, administration, hardening, and troubleshooting of a Windows Server enterprise environment using Active Directory Domain Services (AD DS). The environment simulates a production-grade corporate infrastructure featuring redundant domain controllers, centralized identity management, DNS and DHCP services, Group Policy enforcement, and disaster recovery operations.
 
-The lab focuses on enterprise administration practices and security operations workflows, emphasizing identity management, infrastructure resilience, security hardening, operational troubleshooting, and PowerShell automation.
+The lab focuses on enterprise administration: identity, DNS and DHCP, Group Policy hardening, replication, operational troubleshooting, and PowerShell automation. Hardening and recovery are part of running the environment, not a separate body of work.
+
+**What is in this folder:** this README, `Documentation/`, exported `GPO-Backups/`, `Powershell/`, and `Screenshots/`. There is no `diagrams/` directory and no `recovery-procedures/` directory. Disaster recovery is written up in `Documentation/Disaster Recovery Procedure Document.md`. A diagrams folder is a possible follow-up, not something this repo contains.
 
 ---
 
@@ -26,16 +28,17 @@ The lab focuses on enterprise administration practices and security operations w
 ## Repository Structure
 
 ```text
-active-directory-lab/
-│
+Active-Directory-Lab/
 ├── README.md
-├── diagrams/
-├── screenshots/
-├── powershell/
-├── gpo-backups/
-├── recovery-procedures/
-└── documentation/
-````
+├── Documentation/
+│   ├── Active Directory Operations Guide.md
+│   ├── Architecture Overview Document.md
+│   ├── Disaster Recovery Procedure Document.md
+│   └── Security Hardening Standard.md
+├── GPO-Backups/
+├── Powershell/
+└── Screenshots/
+```
 
 ---
 
@@ -205,18 +208,10 @@ Validation activities:
 
 ### Active Directory User Provisioning
 
-```powershell
-Import-Module ActiveDirectory
+`Powershell/Add User.ps1` creates the sample user `jdoe` in `homelab.local`. It prompts for a password with `Read-Host -AsSecureString`, or accepts a `SecureString` on `-AccountPassword`. The password is not stored in the script or in this README.
 
-New-ADUser `
--Name "John Doe" `
--GivenName "John" `
--Surname "Doe" `
--SamAccountName "jdoe" `
--UserPrincipalName "jdoe@homelab.local" `
--Path "OU=Users,DC=homelab,DC=local" `
--Enabled $true `
--AccountPassword (ConvertTo-SecureString "P@ssw0rd123!" -AsPlainText -Force)
+```powershell
+.\Add User.ps1 -SamAccountName "jdoe" -UserPrincipalName "jdoe@homelab.local" -Path "OU=Users,DC=homelab,DC=local"
 ```
 
 ### Replication Health Validation
@@ -300,7 +295,4 @@ A replication failure was simulated due to DFSR state inconsistency and topology
 * Multi-site Active Directory replication design
 * Active Directory Certificate Services (AD CS)
 * Automated vulnerability scanning
-* Centralized log collection and detection engineering
-
-```
-```
+* Centralized log collection and detection content for the lab

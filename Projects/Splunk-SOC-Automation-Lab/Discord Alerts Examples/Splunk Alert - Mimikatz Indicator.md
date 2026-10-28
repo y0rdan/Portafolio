@@ -14,7 +14,7 @@ The alert indicates that the account “HOMELAB\tjoe” on the domain controller
 
 🗺 MITRE ATT&CK Mapping:
 
-Technique ID: T1003.005
+Technique ID: T1003.001
 Technique Name: OS Credential Dumping: LSASS Memory
 Brief explanation: The observed Mimikatz activity aligns with extracting credentials directly from the LSASS process on a domain controller, matching the described behavior.
 

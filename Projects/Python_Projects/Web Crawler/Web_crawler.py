@@ -26,6 +26,7 @@ def create_db(db_path = "db/pages.db"):
     else:
 
         try:
+            os.makedirs(os.path.dirname(db_path) or ".", exist_ok=True)
             with open (db_path, "a") as file:
                 print(f"[+] File {db_path} has been created")
 

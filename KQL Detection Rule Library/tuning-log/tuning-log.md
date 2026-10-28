@@ -1,272 +1,244 @@
-# False Positive Tuning Log
+# Example Tuning Log (Lab)
 
-> This document records the tuning lifecycle for every detection rule in this library.  
-> Each entry captures: baseline noise, exclusions applied, and final false positive rate after tuning.
-
----
-
-## Tuning Lifecycle Overview
-
-```
-Deploy (alert-only) → Baseline (5–10 days) → Root Cause FPs → Apply Exclusions → Re-baseline → Lock & Document
-```
-
-**FP Rate Targets:**
-- Critical severity: < 1 alert/week
-- High severity: < 5 alerts/day
-- Medium severity: < 10 alerts/day
+> This is a **generic lab example** of how a detection gets tuned. It is not a record of a production environment, and it is not a list of exclusions from any real network.
+>
+> The alert counts below are **illustrative targets for a write-up**. They were not measured on a live company tenant.
+>
+> Do not copy an exclusion from this page into a live rule. Baseline your own telemetry, and do not publish the process name, account pattern, or hostname prefix that a real environment ignores.
 
 ---
 
-## T1078 — Impossible Travel Login
+## Tuning lifecycle
+
+```text
+Deploy (alert-only) → Baseline → Find the benign cause → Narrow the exclusion → Re-baseline → Document
+```
+
+Example volume targets for a lab, after tuning:
+
+- Critical severity: rare enough that each alert is investigated
+- High severity: a handful of alerts a day, each with a clear next step
+- Medium severity: higher volume is acceptable when the query is used for hunting
+
+A public portfolio should describe the **category** of noise (installers, backup jobs, inventory scans, approved remote administration). It should not name the product, service-account prefix, or workstation naming pattern that a real network has turned off.
+
+---
+
+## T1078 — Impossible travel
 
 **Severity:** High | **Tactic:** Initial Access
 
-| Field | Detail |
-|-------|--------|
-| Baseline Noise | ~40 alerts/day |
-| Tuning Period | 7 business days |
-| Final FP Rate | ~2 alerts/day (~95% reduction) |
+| Field | Lab example |
+| --- | --- |
+| What usually causes noise | VPN egress, travel, and a second session from a known admin jump path |
+| Example target | Alerts that remain are worth a look the same day |
 
-**Exclusions Applied:**
-- Excluded known corporate VPN IP ranges (CIDR blocks added to watchlist)
-- Excluded service accounts matching `svc-*` prefix
-- Excluded approved remote workers with static home IPs via named locations in Entra ID
+**How a lab would tune it:**
 
-**Root Cause of FPs:** Majority caused by split-tunnel VPN users appearing to log in from multiple countries simultaneously. Secondary source was executive travel with personal hotspots.
+- Allow a known lab VPN or jump-host address only after you have confirmed it
+- Keep service accounts in the result set until you know which jobs sign in from more than one place
+- Re-check the allowlist when the lab network changes
 
-**Analyst Notes:** Tune VPN CIDR blocks quarterly as infrastructure changes. Remaining alerts are high-fidelity and should be investigated within 30 minutes.
+**What to leave visible:** a user session from two distant locations with no approved remote-access path.
 
 ---
 
-## T1110 — Password Spray Detection
+## T1110 — Password spray
 
 **Severity:** High | **Tactic:** Credential Access
 
-| Field | Detail |
-|-------|--------|
-| Baseline Noise | ~15 alerts/day |
-| Tuning Period | 5 business days |
-| Final FP Rate | ~1–2 alerts/day |
+| Field | Lab example |
+| --- | --- |
+| What usually causes noise | A vulnerability scanner or a misconfigured app trying the same password across many accounts |
+| Example target | External sources stay visible; known lab scanners are identified, not silently dropped in a public write-up |
 
-**Exclusions Applied:**
-- Excluded internal vulnerability scanner IPs (Tenable/Nessus)
-- Excluded legacy application service accounts using NTLM authentication
-- Raised unique account threshold from 5 to 10 to reduce misconfigured app noise
+**How a lab would tune it:**
 
-**Root Cause of FPs:** Automated vulnerability scanners and misconfigured legacy applications generated the bulk of initial noise. One internal monitoring tool was authenticating against multiple accounts on a scheduled basis.
+- Raise the account threshold only after you can tell a scanner from a spray
+- Attribute scanner traffic by a host you control, and review that exception on a schedule
 
-**Analyst Notes:** Enrich alerts with IP reputation data from threat intel feed. Any external IP triggering this rule should be treated as high priority.
+**What to leave visible:** one external address failing against many accounts.
 
 ---
 
-## T1059.001 — PowerShell Encoded Command Execution
+## T1059.001 — Encoded PowerShell
 
 **Severity:** High | **Tactic:** Execution
 
-| Field | Detail |
-|-------|--------|
-| Baseline Noise | ~60 alerts/day |
-| Tuning Period | 10 business days |
-| Final FP Rate | ~3–5 alerts/day |
+| Field | Lab example |
+| --- | --- |
+| What usually causes noise | Management and software-deployment agents that launch encoded PowerShell as part of normal policy |
+| Example target | User-context encoded commands with an unexpected parent stay in the alert |
 
-**Exclusions Applied:**
-- Excluded SCCM client processes where `CCMExec.exe` is the parent process
-- Excluded Microsoft Intune Management Extension process tree
-- Excluded signed Microsoft binaries as initiating process
-- Excluded known monitoring agent process hashes via custom watchlist
+**How a lab would tune it:**
 
-**Root Cause of FPs:** SCCM and Intune generate high volumes of encoded PowerShell as part of normal device management operations. EDR and monitoring agents also contributed significantly.
+- If a management agent is the parent, scope the exception to that agent and that parent, not to all encoded PowerShell
+- Prefer stacking with Script Block Logging (Event ID 4104) over a broad exclusion
 
-**Analyst Notes:** Stack with PowerShell Script Block Logging (Event ID 4104) and AMSI events for compound detection. Encoded commands from unknown parent processes or user-context sessions are highest priority.
+**What to leave visible:** encoded PowerShell started from a user process, Office, or a temporary directory.
 
 ---
 
-## T1053.005 — Scheduled Task Created via Command Line
+## T1053.005 — Scheduled task created from the command line
 
 **Severity:** Medium | **Tactic:** Persistence
 
-| Field | Detail |
-|-------|--------|
-| Baseline Noise | ~25 alerts/day |
-| Tuning Period | 7 business days |
-| Final FP Rate | ~2–3 alerts/day |
+| Field | Lab example |
+| --- | --- |
+| What usually causes noise | Installers and maintenance jobs that create tasks while software is deployed |
+| Example target | Tasks with random names, or tasks that point at user-writable paths, stay visible |
 
-**Exclusions Applied:**
-- Excluded `msiexec.exe`, `setup.exe`, and `install.exe` as initiating processes
-- Excluded Veeam Backup agent scheduled task creation
-- Allowlisted known patch management task names via Sentinel watchlist
+**How a lab would tune it:**
 
-**Root Cause of FPs:** Software installers account for the majority of legitimate scheduled task creation. Backup agents and RMM tools were secondary sources.
+- Installer process names (`msiexec.exe` and similar) are a common, narrow exception
+- Do not exclude an entire backup or management product by name in a public rule
 
-**Analyst Notes:** Review task name and command content in each alert. Random-looking task names or tasks pointing to temp directories are high-priority indicators.
+**What to leave visible:** a task whose action is a script or binary in a temp or user-profile path.
 
 ---
 
-## T1136.001 — Local Account Created Outside Business Hours
+## T1136.001 — Local account created outside business hours
 
 **Severity:** Medium | **Tactic:** Persistence
 
-| Field | Detail |
-|-------|--------|
-| Baseline Noise | ~5 alerts/day |
-| Tuning Period | 5 business days |
-| Final FP Rate | ~0–1 alerts/week |
+| Field | Lab example |
+| --- | --- |
+| What usually causes noise | An admin building a lab server after hours, or an automated provisioning job |
+| Example target | Low volume. Treat a remaining alert as something to investigate |
 
-**Exclusions Applied:**
-- Excluded documented admin accounts performing after-hours work (correlated with change tickets)
-- Excluded automated provisioning service account used during system deployments
+**How a lab would tune it:**
 
-**Root Cause of FPs:** Small number of IT admins performing after-hours server builds. Once provisioning service account was identified and excluded, volume dropped to near-zero.
+- Correlate with a change record before you suppress anything
+- A provisioning account can be noted, but the account name does not belong in a public exclusion list
 
-**Analyst Notes:** Low volume makes this rule inherently high-fidelity. Every alert should be investigated. Correlate with Event ID 4722 (account enabled) and 4732 (added to security group) for full context.
+**What to leave visible:** a local account created and then added to Administrators with no change record.
 
 ---
 
-## T1003.001 — LSASS Memory Access
+## T1003.001 — LSASS memory access
 
 **Severity:** Critical | **Tactic:** Credential Access
 
-| Field | Detail |
-|-------|--------|
-| Baseline Noise | ~8 alerts/day |
-| Tuning Period | 14 business days (extended baseline) |
-| Final FP Rate | ~0–1 alerts/week |
+| Field | Lab example |
+| --- | --- |
+| What usually causes noise | Antivirus and error-reporting processes that legitimately open LSASS |
+| Example target | Anything else accessing LSASS is treated as critical |
 
-**Exclusions Applied:**
-- Excluded `MsMpEng.exe` (Microsoft Defender antivirus engine)
-- Excluded EDR sensor processes (CrowdStrike, Defender for Endpoint)
-- Excluded `werfault.exe` (Windows Error Reporting)
-- Built comprehensive allowlist from 2-week observation of legitimate LSASS accessors
+**How a lab would tune it:**
 
-**Root Cause of FPs:** Security tools (AV, EDR) legitimately access LSASS for protection purposes. Extended baseline period was necessary to capture all legitimate accessors across different system types.
+- A short observation window will show the normal accessors on a lab image (commonly the Microsoft Defender engine and Windows Error Reporting)
+- Build that allowlist from the lab image you actually run. Do not assume another site's allowlist
 
-**Analyst Notes:** Any process not on the allowlist accessing LSASS is critical priority. Do not wait — escalate immediately and consider isolating the endpoint while investigating.
+**What to leave visible:** an unknown process, or a known credential-dumping tool, opening LSASS. On a domain controller this is an incident.
 
 ---
 
-## T1021.001 — RDP Lateral Movement from Non-Admin Workstation
+## T1021.001 — RDP from a non-admin workstation
 
 **Severity:** High | **Tactic:** Lateral Movement
 
-| Field | Detail |
-|-------|--------|
-| Baseline Noise | ~20 alerts/day |
-| Tuning Period | 7 business days |
-| Final FP Rate | ~2 alerts/day |
+| Field | Lab example |
+| --- | --- |
+| What usually causes noise | Helpdesk or admin staff using a normal workstation for remote support, and RDP into lab servers during maintenance |
+| Example target | RDP from a workstation to a domain controller stays visible |
 
-**Exclusions Applied:**
-- Excluded IT helpdesk team workstations (`HELP-*` naming convention)
-- Excluded RDP connections to known test and lab servers
-- Excluded connections occurring during approved maintenance windows
+**How a lab would tune it:**
 
-**Root Cause of FPs:** IT helpdesk staff using standard workstations for remote support was the primary source. Lab environments also generated significant noise during testing periods.
+- Prefer an allowlist of approved admin hosts over a hostname prefix published in a repo
+- Maintenance windows belong in the change record, not in a permanent exclusion
 
-**Analyst Notes:** Correlate source workstation and destination server with AD group membership to identify privilege mismatches. Workstations RDP-ing to domain controllers are critical priority.
+**What to leave visible:** a standard workstation opening RDP to a domain controller or to many servers.
 
 ---
 
-## T1566.001 — Office Document Spawning Shell Process
+## T1566.001 — Office document spawning a shell
 
 **Severity:** High | **Tactic:** Initial Access
 
-| Field | Detail |
-|-------|--------|
-| Baseline Noise | ~10 alerts/day |
-| Tuning Period | 7 business days |
-| Final FP Rate | ~1 alert/day |
+| Field | Lab example |
+| --- | --- |
+| What usually causes noise | A macro-enabled template that a team actually uses for a business process |
+| Example target | A document that arrived from outside the lab and then started a shell |
 
-**Exclusions Applied:**
-- Excluded approved macro-enabled templates by file hash (finance team Excel automation)
-- Excluded finance team devices running approved Excel automation workflows
-- Excluded IT-signed scripts launched via Outlook rules
+**How a lab would tune it:**
 
-**Root Cause of FPs:** Finance team uses macro-enabled Excel templates for reporting automation. These were approved, hash-allowlisted, and device-scoped to minimize exclusion blast radius.
+- If a template is approved, scope the exception to that file hash and to the devices that should run it
+- Do not exclude a whole department
 
-**Analyst Notes:** Any unsigned document or document received via email spawning a shell process is critical priority. Always check email source and whether the document arrived externally.
+**What to leave visible:** an unsigned or external document whose child process is a shell or a script host.
 
 ---
 
-## T1070.001 — Windows Event Log Cleared
+## T1070.001 — Windows event log cleared
 
 **Severity:** High | **Tactic:** Defense Evasion
 
-| Field | Detail |
-|-------|--------|
-| Baseline Noise | ~3 alerts/week |
-| Tuning Period | 5 business days |
-| Final FP Rate | ~0–1 alerts/month (outside change windows) |
+| Field | Lab example |
+| --- | --- |
+| What usually causes noise | A server rebuild or decommission where clearing logs is part of a documented procedure |
+| Example target | Almost no alerts outside a planned change |
 
-**Exclusions Applied:**
-- Excluded timestamps during documented server decommission change windows
-- Excluded known server retirement admin accounts performing decommission tasks
+**How a lab would tune it:**
 
-**Root Cause of FPs:** IT performs log clearing during server decommissions as part of the standard offboarding procedure. Change window correlation eliminated almost all FPs.
+- Suppress only during a documented change window, and only for the admin account doing the work
 
-**Analyst Notes:** Event ID 1102 = Security log cleared. Event ID 104 = System log cleared. Both should trigger immediate investigation unless there is an active change ticket. Correlate with other defense evasion indicators in the same timeframe.
+**What to leave visible:** Event ID 1102 or 104 with no matching change, especially after failed logons or new processes.
 
 ---
 
-## T1486 — Mass File Rename (Ransomware Staging)
+## T1486 — Mass file rename (ransomware staging)
 
 **Severity:** Critical | **Tactic:** Impact
 
-| Field | Detail |
-|-------|--------|
-| Baseline Noise | ~5 alerts/day |
-| Tuning Period | 7 business days |
-| Final FP Rate | ~0–1 alerts/week |
+| Field | Lab example |
+| --- | --- |
+| What usually causes noise | Backup, copy, and file-migration jobs that rename or rewrite many files quickly |
+| Example target | A burst of renames into extensions such as `.locked`, `.encrypted`, or `.enc` is an incident |
 
-**Exclusions Applied:**
-- Excluded Veeam Backup & Replication agent process tree
-- Excluded file server migration service account during active migration projects
-- Raised file rename threshold from 100 to 200 files per 5-minute window
+**How a lab would tune it:**
 
-**Root Cause of FPs:** Backup agents perform file operations that resemble ransomware staging patterns. File migration projects during business hours also generated significant noise.
+- A backup job can look like this rule. If you exclude it, scope the exception to the signed process and the host that runs it
+- Do not name that product, or the excluded process, in a public copy of the rule. That exclusion is a blind spot
+- The threshold in the query (200 files in 5 minutes) is a starting point for a lab, not a measured production value
 
-**Analyst Notes:** Any alert containing known ransomware extensions (`.locked`, `.encrypted`, `.enc`, `.crypted`) requires immediate endpoint isolation — do not wait for confirmation. Speed of response is critical for ransomware containment.
+**What to leave visible:** mass renames by a process that is not the known backup job, on a file server or workstation.
 
 ---
 
-## T1098 — Privileged Role Assigned Outside Change Window
+## T1098 — Privileged role assigned outside a change window
 
 **Severity:** High | **Tactic:** Privilege Escalation
 
-| Field | Detail |
-|-------|--------|
-| Baseline Noise | ~2 alerts/week |
-| Tuning Period | 5 business days |
-| Final FP Rate | ~0 alerts/week |
+| Field | Lab example |
+| --- | --- |
+| What usually causes noise | An emergency (break-glass) role assignment that has an approval trail |
+| Example target | An unapproved privileged assignment is an incident |
 
-**Exclusions Applied:**
-- Excluded documented emergency access (break-glass) account assignments with approval trail
-- Correlated with ServiceNow change tickets to auto-suppress approved role assignments
+**How a lab would tune it:**
 
-**Root Cause of FPs:** Occasional legitimate emergency role assignments outside business hours. ServiceNow integration for automated change ticket correlation eliminated these as FPs.
+- Match an approved change or ticket from whatever system the lab uses. Do not hard-code a vendor integration as if it were already deployed
+- Keep Global Administrator and equivalent role assignments in the alert
 
-**Analyst Notes:** Zero tolerance threshold. Any unapproved privileged role assignment — especially Global Administrator or Privileged Role Administrator — should be treated as an active incident immediately.
+**What to leave visible:** a privileged role grant with no approval record.
 
 ---
 
-## T1018 — Internal Network Reconnaissance
+## T1018 — Internal network reconnaissance
 
 **Severity:** Medium | **Tactic:** Discovery
 
-| Field | Detail |
-|-------|--------|
-| Baseline Noise | ~10 alerts/day |
-| Tuning Period | 7 business days |
-| Final FP Rate | ~1 alert/day |
+| Field | Lab example |
+| --- | --- |
+| What usually causes noise | Vulnerability scanners, inventory, and network-monitoring servers |
+| Example target | A workstation scanning a wide set of internal addresses |
 
-**Exclusions Applied:**
-- Excluded Tenable/Nessus scanner hostname from all network recon rules
-- Excluded SCCM distribution point server (performs inventory scans)
-- Excluded PRTG network monitoring server
+**How a lab would tune it:**
 
-**Root Cause of FPs:** Security scanning tools and network monitoring platforms are the primary source of internal recon-like behavior. All three tools were identified during baseline and explicitly excluded by hostname.
+- Identify scanner and monitoring hosts in the lab and exclude those hosts, not every system that connects to many ports
+- Review the host list when a new management server is added
 
-**Analyst Notes:** Standard servers and workstations should never be scanning large portions of the internal network. Any non-excluded device triggering this rule should be investigated — particularly workstations, which have no legitimate reason to perform broad internal network scanning.
+**What to leave visible:** a user workstation performing a broad internal scan.
 
 ---
 
-*Last updated: 2026 | Maintained by Yordan Borges*
+*Lab example maintained by Yordan Borges. Not a production tuning record.*
